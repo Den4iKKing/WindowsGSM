@@ -92,9 +92,9 @@ Allow support more game servers by installing plugins!
 1. [WindowsGSM.ARMA2](https://github.com/DevVault/WindowsGSM.ARMA2)
 2. [WindowsGSM.ARMA2OA](https://github.com/DevVault/WindowsGSM.ARMA2)
 3. [WindowsGSM.ARMA3](https://github.com/BattlefieldDuck/WindowsGSM.ARMA3)
-3. [WindowsGSM.HLDM](https://github.com/DevVault/WindowsGSM.HLDM)
-3. [WindowsGSM.L4D](https://github.com/DevVault/WindowsGSM.L4D)
-4. [WindowsGSM.PaperMC](https://github.com/BattlefieldDuck/WindowsGSM.PaperMC)
+4. [WindowsGSM.HLDM](https://github.com/DevVault/WindowsGSM.HLDM)
+5. [WindowsGSM.L4D](https://github.com/DevVault/WindowsGSM.L4D)
+6. [WindowsGSM.PaperMC](https://github.com/BattlefieldDuck/WindowsGSM.PaperMC)
 
 ![Screenshot Plugins](https://windowsgsm.com/assets/images/WindowsGSM-Plugins-v1.21.0.png)
 
@@ -113,7 +113,7 @@ Allow support more game servers by installing plugins!
   * **Dennis** - *Mordhau server test*
 
 ### License
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/WindowsGSM/WindowsGSM/blob/master/LICENSE) file for details
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
 
 ## Stargazers over time
 [![Stargazers over time](https://starchart.cc/WindowsGSM/WindowsGSM.svg)](https://starchart.cc/WindowsGSM/WindowsGSM)
