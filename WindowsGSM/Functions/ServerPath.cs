@@ -6,15 +6,15 @@ namespace WindowsGSM.Functions
     {
         public static class FolderName
         {
-            public static string Bin = "bin";
-            public static string Backups = "backups";
-            public static string Installer = "installer";
-            public static string Logs = "logs";
-            public static string Plugins = "plugins";
-            public static string Servers = "servers";
-            public static string Configs = "configs";
-            public static string Cache = "cache";
-            public static string Serverfiles = "serverfiles";
+            public const string Bin = "bin";
+            public const string Backups = "backups";
+            public const string Installer = "installer";
+            public const string Logs = "logs";
+            public const string Plugins = "plugins";
+            public const string Servers = "servers";
+            public const string Configs = "configs";
+            public const string Cache = "cache";
+            public const string Serverfiles = "serverfiles";
         }
 
         public static void CreateAndFixDirectories()

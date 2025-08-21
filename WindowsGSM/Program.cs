@@ -12,15 +12,19 @@ namespace WindowsGSM
         [STAThread]
         public static void Main()
         {
+            // Get the base directory of the running executable once and reuse it
+            string exePath = Process.GetCurrentProcess().MainModule?.FileName ?? string.Empty;
+            string baseDir = Path.GetDirectoryName(exePath) ?? string.Empty;
+
             // Due to a weird error, MahApps.Metro.dll cannot be embed inside WindowsGSM.exe,
             // therefore, MahApps.Metro.dll is stored in Resources, and copy the file to the WindowsGSM directory.
-            string mahAppPath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), "MahApps.Metro.dll");
+            string mahAppPath = Path.Combine(baseDir, "MahApps.Metro.dll");
             if (!File.Exists(mahAppPath) || new FileInfo(mahAppPath).Length != 3425392) // Latest MahApps.Metro.dll byte size is 3425392
             {
                 File.WriteAllBytes(mahAppPath, Properties.Resources.MahApps_Metro);
             }
 
-            string roslynBase = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), ServerPath.FolderName.Bin);
+            string roslynBase = Path.Combine(baseDir, ServerPath.FolderName.Bin);
             Directory.CreateDirectory(roslynBase);
             if (!Directory.Exists(Path.Combine(roslynBase, "roslyn")))
             {
@@ -33,7 +37,7 @@ namespace WindowsGSM
                 }
             }
 
-            string ntsJsonPath = Path.Combine(Path.GetDirectoryName(Process.GetCurrentProcess().MainModule.FileName), ServerPath.FolderName.Bin, "Newtonsoft.Json.dll");
+            string ntsJsonPath = Path.Combine(baseDir, ServerPath.FolderName.Bin, "Newtonsoft.Json.dll");
             if (!File.Exists(ntsJsonPath) || new FileInfo(ntsJsonPath).Length != 700336) // Latest Newtonsoft.Json.dll byte size is 700336
             {
                 File.WriteAllBytes(ntsJsonPath, Properties.Resources.Newtonsoft_Json);
