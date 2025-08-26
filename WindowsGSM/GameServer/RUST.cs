@@ -112,8 +112,45 @@ namespace WindowsGSM.GameServer
 
         public async Task<Process> Update(bool validate = false, string custom = null)
         {
-            var (p, error) = await Installer.SteamCMD.UpdateEx(_serverData.ServerID, AppId, validate, custom: custom);
-            Error = error;
+            var steamCMD = new Installer.SteamCMD();
+
+            // Get local and remote build to determine if update is required
+            var localBuild = steamCMD.GetLocalBuild(_serverData.ServerID, AppId);
+            var remoteBuild = await steamCMD.GetRemoteBuild(AppId);
+
+            // If build numbers are the same, no update is needed
+            if (!string.IsNullOrEmpty(localBuild) && localBuild == remoteBuild)
+            {
+                Notice = "Server is already up to date";
+                return null;
+            }
+
+            Process p = null;
+
+            // Try updating twice if the first attempt does not update the build
+            for (var attempt = 0; attempt < 2; attempt++)
+            {
+                var (process, error) = await Installer.SteamCMD.UpdateEx(_serverData.ServerID, AppId, validate, custom: custom);
+                Error = error;
+                p = process;
+                if (p == null)
+                {
+                    return null;
+                }
+
+                // Wait for the update process to exit before checking build numbers
+                await Task.Run(() => p.WaitForExit());
+
+                localBuild = steamCMD.GetLocalBuild(_serverData.ServerID, AppId);
+                remoteBuild = await steamCMD.GetRemoteBuild(AppId);
+
+                if (!string.IsNullOrEmpty(localBuild) && localBuild == remoteBuild)
+                {
+                    return p;
+                }
+            }
+
+            Error = $"Unable to verify server update. Local build {localBuild} does not match remote build {remoteBuild}.";
             return p;
         }
 
