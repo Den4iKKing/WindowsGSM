@@ -237,6 +237,8 @@
                             <TextBox x:Name="textbox_InstallServerName" Height="23" TextWrapping="Wrap" Text="" VerticalAlignment="Top"/>
                         </DockPanel>
 
+                        <mah:ToggleSwitch x:Name="switch_InstallOxide" Margin="0,0,0,15" Header="Install OxideMod" Visibility="Collapsed"/>
+
                         <DockPanel Margin="0,0,0,15" DockPanel.Dock="Top">
                             <Button x:Name="button_InstallSetAccount" Content="Set Account" DockPanel.Dock="Left" Width="120" Margin="0,0,5,0" Click="Button_SetAccount_Click"/>
                             <Button x:Name="button_Install" Content="Install" VerticalAlignment="Top" Click="Button_Install_Click"/>
@@ -755,6 +757,9 @@
 
                         <Label Content="Auto Update" HorizontalAlignment="Left" Margin="338,127,0,0" VerticalAlignment="Top"/>
                         <mah:ToggleSwitch x:Name="switch_autoupdate" Margin="422,125,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Toggled="Button_AutoUpdate_Click" Width="44" Height="30"/>
+
+                        <Label x:Name="label_oxide" Content="Oxide" HorizontalAlignment="Left" Margin="475,127,0,0" VerticalAlignment="Top" Visibility="Collapsed"/>
+                        <mah:ToggleSwitch x:Name="switch_oxide" Margin="545,125,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Toggled="Button_Oxide_Click" Width="44" Height="30" Visibility="Collapsed"/>
 
                         <Label Content="Update on Start" HorizontalAlignment="Left" Margin="159,99,0,0" VerticalAlignment="Top"/>
                         <mah:ToggleSwitch x:Name="switch_updateonstart" Margin="258,97,0,0" VerticalAlignment="Top" HorizontalAlignment="Left" Toggled="Button_UpdateOnStart_Click" Width="44" Height="30"/>

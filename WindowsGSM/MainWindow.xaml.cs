@@ -92,6 +92,7 @@ namespace WindowsGSM
 
             public bool EmbedConsole;
             public bool AutoScroll;
+            public bool Oxide;
         }
 
         private enum WindowShowStyle : uint
@@ -790,6 +791,7 @@ namespace WindowsGSM
 
             _serverMetadata[i].EmbedConsole = serverConfig.EmbedConsole;
             _serverMetadata[i].AutoScroll = serverConfig.AutoScroll;
+            _serverMetadata[i].Oxide = serverConfig.Oxide;
         }
 
         private async void AutoStartServer()
@@ -1075,6 +1077,9 @@ namespace WindowsGSM
                 switch_restartcrontab.IsOn = GetServerMetadata(row.ID).RestartCrontab;
                 switch_autostart.IsOn = GetServerMetadata(row.ID).AutoStart;
                 switch_autoupdate.IsOn = GetServerMetadata(row.ID).AutoUpdate;
+                label_oxide.Visibility = row.Game == GameServer.RUST.FullName ? Visibility.Visible : Visibility.Collapsed;
+                switch_oxide.Visibility = row.Game == GameServer.RUST.FullName ? Visibility.Visible : Visibility.Collapsed;
+                switch_oxide.IsOn = row.Game == GameServer.RUST.FullName && GetServerMetadata(row.ID).Oxide;
                 switch_updateonstart.IsOn = GetServerMetadata(row.ID).UpdateOnStart;
                 switch_backuponstart.IsOn = GetServerMetadata(row.ID).BackupOnStart;
                 switch_discordalert.IsOn = GetServerMetadata(row.ID).DiscordAlert;
@@ -1192,6 +1197,7 @@ namespace WindowsGSM
 
                 // Create WindowsGSM.cfg
                 newServerConfig.SetData(servergame, servername, gameServer);
+                newServerConfig.Oxide = switch_InstallOxide.IsOn && servergame == GameServer.RUST.FullName;
                 newServerConfig.CreateWindowsGSMConfig();
 
                 // Create WindowsGSM.cfg and game server config
@@ -1207,6 +1213,13 @@ namespace WindowsGSM
 
                 LoadServerTable();
                 Log(newServerConfig.ServerID, "Install: Success");
+
+                if (servergame == GameServer.RUST.FullName && switch_InstallOxide.IsOn)
+                {
+                    var serverTable = new ServerTable { ID = newServerConfig.ServerID, Game = servergame };
+                    bool installed = await InstallAddons.OxideMod(serverTable);
+                    Log(newServerConfig.ServerID, installed ? "Oxide: Installed" : "Oxide: Fail to install");
+                }
 
                 MahAppFlyout_InstallGameServer.IsOpen = false;
                 textbox_InstallServerName.IsEnabled = true;
@@ -1245,6 +1258,8 @@ namespace WindowsGSM
             button_InstallSetAccount.IsEnabled = false;
             textBox_InstallToken.Visibility = Visibility.Hidden;
             button_InstallSendToken.Visibility = Visibility.Hidden;
+            switch_InstallOxide.Visibility = Visibility.Collapsed;
+            switch_InstallOxide.IsOn = false;
             if (selectedgame == null) { return; }
 
             try
@@ -1256,6 +1271,7 @@ namespace WindowsGSM
                     textBox_InstallToken.Visibility = Visibility.Visible;
                     button_InstallSendToken.Visibility = Visibility.Visible;
                 }
+                switch_InstallOxide.Visibility = selectedgame.Name == GameServer.RUST.FullName ? Visibility.Visible : Visibility.Collapsed;
             }
             catch
             {
@@ -2128,6 +2144,12 @@ namespace WindowsGSM
                 Log(server.ID, "[ERROR] " + gameServer.Error);
             }
 
+            if (server.Game == GameServer.RUST.FullName && GetServerMetadata(server.ID).Oxide)
+            {
+                bool installed = await InstallAddons.OxideMod(server);
+                Log(server.ID, installed ? "Oxide: Updated" : "Oxide: Fail to update");
+            }
+
             _serverMetadata[int.Parse(server.ID)].ServerStatus = ServerStatus.Stopped;
             SetServerStatus(server, "Stopped");
 
@@ -2487,6 +2509,12 @@ namespace WindowsGSM
 
                         //Update the server
                         await gameServer.Update();
+
+                        if (server.Game == GameServer.RUST.FullName && GetServerMetadata(server.ID).Oxide)
+                        {
+                            bool installed = await InstallAddons.OxideMod(server);
+                            Log(server.ID, installed ? "Oxide: Updated" : "Oxide: Fail to update");
+                        }
 
                         if (string.IsNullOrWhiteSpace(gameServer.Error))
                         {
@@ -3539,6 +3567,25 @@ namespace WindowsGSM
             if (server == null) { return; }
             _serverMetadata[int.Parse(server.ID)].AutoUpdate = switch_autoupdate.IsOn;
             ServerConfig.SetSetting(server.ID, ServerConfig.SettingName.AutoUpdate, GetServerMetadata(server.ID).AutoUpdate ? "1" : "0");
+        }
+
+        private async void Button_Oxide_Click(object sender, RoutedEventArgs e)
+        {
+            var server = (ServerTable)ServerGrid.SelectedItem;
+            if (server == null) { return; }
+
+            _serverMetadata[int.Parse(server.ID)].Oxide = switch_oxide.IsOn;
+            ServerConfig.SetSetting(server.ID, ServerConfig.SettingName.Oxide, GetServerMetadata(server.ID).Oxide ? "1" : "0");
+
+            if (switch_oxide.IsOn && server.Game == GameServer.RUST.FullName)
+            {
+                bool? existed = InstallAddons.IsOxideModExists(server);
+                if (existed == false)
+                {
+                    bool installed = await InstallAddons.OxideMod(server);
+                    Log(server.ID, installed ? "Oxide: Installed" : "Oxide: Fail to install");
+                }
+            }
         }
 
         private async void Button_DiscordAlertSettings_Click(object sender, RoutedEventArgs e)
