@@ -37,6 +37,7 @@ namespace WindowsGSM.Functions
             public const string CPUPriority = "cpupriority";
             public const string CPUAffinity = "cpuaffinity";
             public const string AutoScroll = "autoscroll";
+            public const string Oxide = "oxide";
         }
 
         public string ServerID;
@@ -68,6 +69,7 @@ namespace WindowsGSM.Functions
         public string CPUPriority;
         public string CPUAffinity;
         public bool AutoScroll;
+        public bool Oxide;
 
         public ServerConfig(string serverid)
         {
@@ -139,6 +141,7 @@ namespace WindowsGSM.Functions
                             case SettingName.CPUPriority: CPUPriority = keyvalue[1]; break;
                             case SettingName.CPUAffinity: CPUAffinity = keyvalue[1]; break;
                             case SettingName.AutoScroll: AutoScroll = keyvalue[1] == "1"; break;
+                            case SettingName.Oxide: Oxide = keyvalue[1] == "1"; break;
                         }
                     }
                 }
@@ -176,6 +179,7 @@ namespace WindowsGSM.Functions
             CPUPriority = "2";
             CPUAffinity = string.Concat(System.Linq.Enumerable.Repeat("1", Environment.ProcessorCount));
             AutoScroll = true;
+            Oxide = false;
         }
 
         public bool CreateWindowsGSMConfig()
@@ -223,6 +227,7 @@ namespace WindowsGSM.Functions
                     textwriter.WriteLine($"{SettingName.AutoUpdateAlert}=\"1\"");
                     textwriter.WriteLine($"{SettingName.RestartCrontabAlert}=\"1\"");
                     textwriter.WriteLine($"{SettingName.CrashAlert}=\"1\"");
+                    textwriter.WriteLine($"{SettingName.Oxide}=\"0\"");
                 }
 
                 return true;
