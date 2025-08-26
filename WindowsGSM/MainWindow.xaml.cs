@@ -3577,13 +3577,21 @@ namespace WindowsGSM
             _serverMetadata[int.Parse(server.ID)].Oxide = switch_oxide.IsOn;
             ServerConfig.SetSetting(server.ID, ServerConfig.SettingName.Oxide, GetServerMetadata(server.ID).Oxide ? "1" : "0");
 
-            if (switch_oxide.IsOn && server.Game == GameServer.RUST.FullName)
+            if (server.Game == GameServer.RUST.FullName)
             {
-                bool? existed = InstallAddons.IsOxideModExists(server);
-                if (existed == false)
+                if (switch_oxide.IsOn)
                 {
-                    bool installed = await InstallAddons.OxideMod(server);
-                    Log(server.ID, installed ? "Oxide: Installed" : "Oxide: Fail to install");
+                    bool? existed = InstallAddons.IsOxideModExists(server);
+                    if (existed == false)
+                    {
+                        bool installed = await InstallAddons.OxideMod(server);
+                        Log(server.ID, installed ? "Oxide: Installed" : "Oxide: Fail to install");
+                    }
+                }
+                else
+                {
+                    bool removed = await Task.Run(() => InstallAddons.RemoveOxideMod(server));
+                    Log(server.ID, removed ? "Oxide: Removed" : "Oxide: Fail to remove");
                 }
             }
         }
