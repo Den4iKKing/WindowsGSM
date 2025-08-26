@@ -808,11 +808,6 @@
     <Resource Include="Images\HMenu\ViewPlugins.ico" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll">
-      <Link>ReferencesEx\Newtonsoft.Json.dll</Link>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
       <Link>ReferencesEx\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</Link>
     </EmbeddedResource>
