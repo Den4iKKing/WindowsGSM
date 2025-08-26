@@ -143,6 +143,47 @@ namespace WindowsGSM.Functions
             }
         }
 
+        public static bool RemoveOxideMod(Functions.ServerTable server)
+        {
+            if (server.Game != GameServer.RUST.FullName)
+            {
+                return false;
+            }
+
+            try
+            {
+                string basePath = Functions.ServerPath.GetServersServerFiles(server.ID);
+
+                // delete oxide directory
+                string oxideDir = Path.Combine(basePath, "oxide");
+                if (Directory.Exists(oxideDir))
+                {
+                    Directory.Delete(oxideDir, true);
+                }
+
+                // remove oxide related assemblies
+                string managedPath = Path.Combine(basePath, "RustDedicated_Data", "Managed");
+                if (Directory.Exists(managedPath))
+                {
+                    foreach (var file in Directory.GetFiles(managedPath, "Oxide.*.dll", SearchOption.TopDirectoryOnly))
+                    {
+                        try { File.Delete(file); } catch { }
+                    }
+
+                    foreach (var file in Directory.GetFiles(managedPath, "uMod.*.dll", SearchOption.TopDirectoryOnly))
+                    {
+                        try { File.Delete(file); } catch { }
+                    }
+                }
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
         private static async Task<string> GetOxideModLatestVersion()
         {
             try
